@@ -24,7 +24,7 @@ public class UrlController {
     {
         String shortCode = urlService.createShortUrl(originalUrl);
 
-        String shortUrl = "http://localhost:8080/" + shortCode;
+        String shortUrl = "https://url-shortner-pj51.onrender.com/" + shortCode;
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
