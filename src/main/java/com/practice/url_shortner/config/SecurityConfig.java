@@ -10,6 +10,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.List;
 
 @Configuration
 public class SecurityConfig {
@@ -19,7 +24,10 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf(csrf -> csrf.disable())    // ➡️ CSRF not needed for JWT and ➡️ Stateless API
+        http
+                .cors(cors -> {})   // “Use the CORS configuration bean.”
+                // If you forget this → CORS bean does nothing.
+                .csrf(csrf -> csrf.disable())    // ➡️ CSRF not needed for JWT and ➡️ Stateless API
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
@@ -37,4 +45,26 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
+    // CORS = Cross-Origin Resource Sharing
+    // Browser rule:
+    // “Frontend cannot call backend on different port unless backend explicitly allows it.”
+    // Postman works ✅
+    // Browser blocks ❌
+    // Because CORS is browser security, not server security.
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(List.of("http://localhost:5173"));
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(List.of("*")); // “Frontend can send any header.” imp becoz we send Authorization: Bearer token
+        configuration.setAllowCredentials(true); // Allows cookies or authentication headers. Even if you don’t use cookies now, keep it.
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration); // “Apply this CORS rule to all endpoints.”
+
+        return source;
+    }
 }
+
+// ⚠️ OPTIONS is important because browser sends a preflight request first.

@@ -2,15 +2,20 @@ package com.practice.url_shortner.service;
 
 import com.practice.url_shortner.model.UrlMapping;
 import com.practice.url_shortner.repository.UrlRepository;
+import com.practice.url_shortner.repository.UserRepository;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -23,6 +28,8 @@ public class UrlService {
 
     @Autowired
     RedisTemplate<String, String> redisTemplate;
+    @Autowired
+    private UserRepository userRepository;
 
     public String createShortUrl(String originalUrl) {
 
@@ -102,5 +109,18 @@ public class UrlService {
         url.setClickCount(url.getClickCount() + 1);  // Total number of times this short URL was opened
         urlRepository.save(url); // to update in database
         return url.getOriginalUrl();
+    }
+
+    public List<UrlMapping> getUserUrls() {
+        return urlRepository.findAll();
+    }
+
+    public void deleteUrl(Long id) {
+        urlRepository.deleteById(id);
+    }
+
+    public Page<UrlMapping> getUrls(int page, int size) {
+
+        return urlRepository.findAll(PageRequest.of(page, size));
     }
 }
