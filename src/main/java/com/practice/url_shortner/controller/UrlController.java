@@ -14,7 +14,7 @@ import java.util.List;
 
 @CrossOrigin(origins = "*")
 @RestController
-@RequestMapping("api/v1/url")
+@RequestMapping("/api/v1/url")
 public class UrlController {
 
     @Autowired
