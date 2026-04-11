@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.Map;
 
-
+@CrossOrigin("https://url-shortner-frontend-ashy.vercel.app")
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
