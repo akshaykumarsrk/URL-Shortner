@@ -55,7 +55,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("https://url-shortner-frontend-ashy.vercel.app"));
+        configuration.setAllowedOrigins(List.of("*"));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*")); // “Frontend can send any header.” imp becoz we send Authorization: Bearer token
         configuration.setAllowCredentials(true); // Allows cookies or authentication headers. Even if you don’t use cookies now, keep it.
